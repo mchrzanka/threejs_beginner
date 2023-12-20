@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 //creates renderer instance and sets the size of our app. In this case, it's the width and height of the window.
 const renderer = new THREE.WebGL1Renderer();
@@ -14,6 +15,10 @@ const camera = new THREE.PerspectiveCamera(
 	1000
 );
 
+//creates control where you mouse hold on the screen and you can move the scene around.
+//https://threejs.org/docs/#examples/en/controls/OrbitControls
+const controls = new OrbitControls(camera, renderer.domElement);
+
 //acts as a guide, introduces the 3D co-ordinate system (x,y,z)
 //https://threejs.org/docs/#api/en/helpers/AxesHelper
 const axesHelper = new THREE.AxesHelper(5);
@@ -21,6 +26,9 @@ scene.add(axesHelper);
 
 //moves the camera back because if I don't move it back, it renders at the same level as the scene.
 camera.position.set(0, 2, 5); //x,y,z
+
+//controls.update() must be called after any manual changes to the camera's transform
+controls.update();
 
 //the cube we're generating for this example
 const geometry = new THREE.BoxGeometry(1, 1, 1);
