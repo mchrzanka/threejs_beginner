@@ -7,6 +7,10 @@ import * as dat from 'dat.gui'; //adding dat.gui for user graphics controls
 //BASIC CREATE A SCENE
 //creates renderer instance and sets the size of our app. In this case, it's the width and height of the window.
 const renderer = new THREE.WebGL1Renderer();
+
+//set shadows to true
+renderer.shadowMap.enabled = true;
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -53,6 +57,7 @@ const sphereMaterial = new THREE.MeshStandardMaterial({
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial); //a mesh, in 3D world, is an object
 scene.add(sphere);
 sphere.position.set(-10, 10, 0);
+sphere.castShadow = true; //sphere creates a shadow (onto the plane)
 
 //SEEING WHERE WE ARE IN SPACE
 //two dimensional plane to help us see where we are in space (it's like a blank canvas)
@@ -65,24 +70,41 @@ const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 scene.add(plane);
 //make the plane and the grid match
 plane.rotation.x = -0.5 * Math.PI;
+plane.receiveShadow = true; //plane receives shadow from the sphere
 
 //a grid that also helps us see where we are in space
 const gridHelper = new THREE.GridHelper(30); //the value increases the size of the grid. Can leave blank.
 scene.add(gridHelper);
 
-//LIGHTING
+//LIGHTING & SHADOWS
 const ambientLight = new THREE.AmbientLight(0x333333);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-scene.add(directionalLight);
+// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+// scene.add(directionalLight);
+// directionalLight.position.set(-30, 40, 0); //move the light helper square to change light direction
+// directionalLight.castShadow = true; //the light casts a shadow
+// directionalLight.shadow.camera.bottom = -12; //fixes the shadow being clipped (makes the bottom area bigger by 12 rad)
 
-//physical light helper to show you where the light source is coming from
-const dLightHelper = new THREE.DirectionalLightHelper(directionalLight);
-scene.add(dLightHelper);
+// //physical directional light helper to show you where the light source is coming from
+// const dLightHelper = new THREE.DirectionalLightHelper(directionalLight);
+// scene.add(dLightHelper);
 
-//move the light helper square to change light direction
-directionalLight.position.set(-30, 40, 0);
+// //shadow helper for us to physically see the area where the shadow can be cast. Before adding this in, the shadow was being clipped because the area wasn't big enough to hold it.
+// const dLightShadowHelper = new THREE.CameraHelper(
+// 	directionalLight.shadow.camera
+// );
+// scene.add(dLightShadowHelper);
+
+const spotLight = new THREE.SpotLight(0xffffff);
+scene.add(spotLight);
+spotLight.position.set(-20, 20, 0);
+//spotLight.intensity = 100; // needed this to make the light stronger because it wasn't appearing further away
+
+spotLight.castShadow = true;
+
+const sLightHelper = new THREE.SpotLightHelper(spotLight);
+scene.add(sLightHelper);
 
 //GUI FOR USERS - dat.gui
 const gui = new dat.GUI();
@@ -91,6 +113,9 @@ const gui = new dat.GUI();
 const options = {
 	sphereColor: '#ffea00',
 	wireframe: false,
+	angle: 0.2, //spotlight
+	penumbra: 0, //spotlight
+	intensity: 1, //spotlight
 };
 
 gui.addColor(options, 'sphereColor').onChange(function (e) {
@@ -100,6 +125,10 @@ gui.addColor(options, 'sphereColor').onChange(function (e) {
 gui.add(options, 'wireframe').onChange(function (e) {
 	sphere.material.wireframe = e;
 });
+
+gui.add(options, 'angle', 0, 1);
+gui.add(options, 'penumbra', 0, 1);
+gui.add(options, 'intensity', 0, 100);
 
 //ANIMATION
 //sphere bounce
@@ -115,8 +144,15 @@ function animate() {
 	cube.rotation.x += 0.01;
 	cube.rotation.y += 0.01;
 
+	//ball bounce
 	step += speed;
-	sphere.position.y = 10 * Math.abs(Math.sin(step)); //ball looks like it's bouncing, but it's following the sin wave
+	sphere.position.y = 10 * Math.abs(Math.sin(step)); //ball looks like it's bouncing, but it's following the sin wave on the y axis
+
+	//setting spotlight values from gui
+	spotLight.angle = options.angle;
+	spotLight.penumbra = options.penumbra;
+	spotLight.intensity = options.intensity;
+	sLightHelper.update(); //call helper after every time we update the values
 }
 animate();
 
