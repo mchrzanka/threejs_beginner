@@ -46,7 +46,7 @@ scene.add(cube);
 //a circle
 //https://threejs.org/docs/?q=sphere#api/en/geometries/SphereGeometry
 const sphereGeometry = new THREE.SphereGeometry(4, 50, 50);
-const sphereMaterial = new THREE.MeshBasicMaterial({
+const sphereMaterial = new THREE.MeshStandardMaterial({
 	color: 0x0000ff,
 	wireframe: false, //change to true to see frame of object
 });
@@ -57,7 +57,7 @@ sphere.position.set(-10, 10, 0);
 //SEEING WHERE WE ARE IN SPACE
 //two dimensional plane to help us see where we are in space (it's like a blank canvas)
 const planeGeometry = new THREE.PlaneGeometry(30, 30);
-const planeMaterial = new THREE.MeshBasicMaterial({
+const planeMaterial = new THREE.MeshStandardMaterial({
 	color: 0xffffff,
 	side: THREE.DoubleSide, //without this, the plane only shows from the front. This is optional, if you want to see it from all sides.
 });
@@ -69,6 +69,20 @@ plane.rotation.x = -0.5 * Math.PI;
 //a grid that also helps us see where we are in space
 const gridHelper = new THREE.GridHelper(30); //the value increases the size of the grid. Can leave blank.
 scene.add(gridHelper);
+
+//LIGHTING
+const ambientLight = new THREE.AmbientLight(0x333333);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+scene.add(directionalLight);
+
+//physical light helper to show you where the light source is coming from
+const dLightHelper = new THREE.DirectionalLightHelper(directionalLight);
+scene.add(dLightHelper);
+
+//move the light helper square to change light direction
+directionalLight.position.set(-30, 40, 0);
 
 //GUI FOR USERS - dat.gui
 const gui = new dat.GUI();
