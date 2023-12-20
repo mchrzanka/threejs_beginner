@@ -106,6 +106,9 @@ spotLight.castShadow = true;
 const sLightHelper = new THREE.SpotLightHelper(spotLight);
 scene.add(sLightHelper);
 
+//FOG
+scene.fog = new THREE.Fog(0xffffff, 0, 200);
+
 //GUI FOR USERS - dat.gui
 const gui = new dat.GUI();
 
@@ -157,4 +160,6 @@ function animate() {
 animate();
 
 //RENDERING EVERYTHING
+
+//render everything
 renderer.render(scene, camera);
