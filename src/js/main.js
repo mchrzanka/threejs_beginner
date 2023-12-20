@@ -50,6 +50,16 @@ const cube = new THREE.Mesh(boxGeometry, boxMaterial); //a mesh, in 3D world, is
 scene.add(cube);
 
 //a cube with images on it's faces
+//background image. each type of file has a special loader. For images, we use the textureLoader
+const textureLoader = new THREE.TextureLoader();
+
+const box2Geometry = new THREE.BoxGeometry(4, 4, 4);
+const box2Material = new THREE.MeshBasicMaterial({
+	map: textureLoader.load(nebula),
+});
+const box2 = new THREE.Mesh(box2Geometry, box2Material);
+scene.add(box2);
+box2.position.set(0, 15, 10);
 
 //a circle
 //https://threejs.org/docs/?q=sphere#api/en/geometries/SphereGeometry
@@ -167,8 +177,6 @@ animate();
 //background color
 //renderer.setClearColor(0xcdb0ed);
 
-//background image. each type of file has a special loader. For images, we use the textureLoader
-//const textureLoader = new THREE.TextureLoader();
 //scene.background = textureLoader.load(nebula); //this method loads the image in 2D, which is fine if that's what you want.
 
 //to make the background 3D:
