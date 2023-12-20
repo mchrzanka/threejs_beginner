@@ -4,6 +4,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 //https://www.educative.io/answers/what-is-datgui-in-threejs
 import * as dat from 'dat.gui'; //adding dat.gui for user graphics controls
 
+import nebula from '../imgs/nebula.png';
+
 //BASIC CREATE A SCENE
 //creates renderer instance and sets the size of our app. In this case, it's the width and height of the window.
 const renderer = new THREE.WebGL1Renderer();
@@ -46,6 +48,8 @@ const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); //this material doesn't need a light source to be seen. All of the other ones do.
 const cube = new THREE.Mesh(boxGeometry, boxMaterial); //a mesh, in 3D world, is an object
 scene.add(cube);
+
+//a cube with images on it's faces
 
 //a circle
 //https://threejs.org/docs/?q=sphere#api/en/geometries/SphereGeometry
@@ -131,7 +135,7 @@ gui.add(options, 'wireframe').onChange(function (e) {
 
 gui.add(options, 'angle', 0, 1);
 gui.add(options, 'penumbra', 0, 1);
-gui.add(options, 'intensity', 0, 100);
+gui.add(options, 'intensity', 0, 1000);
 
 //ANIMATION
 //sphere bounce
@@ -160,6 +164,23 @@ function animate() {
 animate();
 
 //RENDERING EVERYTHING
+//background color
+//renderer.setClearColor(0xcdb0ed);
+
+//background image. each type of file has a special loader. For images, we use the textureLoader
+//const textureLoader = new THREE.TextureLoader();
+//scene.background = textureLoader.load(nebula); //this method loads the image in 2D, which is fine if that's what you want.
+
+//to make the background 3D:
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+scene.background = cubeTextureLoader.load([
+	nebula,
+	nebula,
+	nebula,
+	nebula,
+	nebula,
+	nebula,
+]); //you can import multiple images and just list their names in the position you want them.
 
 //render everything
 renderer.render(scene, camera);
