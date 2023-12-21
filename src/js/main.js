@@ -160,6 +160,26 @@ const rayCaster = new THREE.Raycaster(); //a ray, in geometry, is a line that st
 //each object in the scene has data, including an ID. We grab the ID and store it to use it in the animate function.
 const sphereId = sphere.id;
 
+//CHANGE MESH SHAPE
+const plane2Geometry = new THREE.PlaneGeometry(10, 10, 10, 10);
+const plane2Material = new THREE.MeshBasicMaterial({
+	color: 0xffffff,
+	wireframe: true,
+});
+const plane2 = new THREE.Mesh(plane2Geometry, plane2Material);
+scene.add(plane2);
+plane2.position.set(10, 10, 15);
+
+//https://www.youtube.com/watch?v=xJAfLdUgdc4&list=PLjcjAqAnHd1EIxV4FSZIiJZvsdrBc1Xho @ 44.53
+//positions of all the vertex points are located in this array. Grabbing the first 3 entries in the array (x,y,z) allows us to mess with the very first vertex in the mesh.
+plane2.geometry.attributes.position.array[0] -= 10 * Math.random();
+plane2.geometry.attributes.position.array[1] -= 10 * Math.random();
+plane2.geometry.attributes.position.array[2] -= 10 * Math.random();
+
+//grab the very last z vertex in the mesh and change it (as opposed to the x,y,z of the first vertex that we just did)
+const lastPointZ = plane2.geometry.attributes.position.array.length - 1;
+plane2.geometry.attributes.position.array[lastPointZ] -= 10 * Math.random();
+
 //ANIMATION
 //sphere bounce
 let step = 0;
@@ -194,6 +214,13 @@ function animate() {
 			intersects[i].object.material.color.set(0xff0000);
 		}
 	}
+
+	//animate the changing of the vertex points
+	plane2.geometry.attributes.position.array[0] = 10 * Math.random();
+	plane2.geometry.attributes.position.array[1] = 10 * Math.random();
+	plane2.geometry.attributes.position.array[2] = 10 * Math.random();
+	plane2.geometry.attributes.position.array[lastPointZ] = 10 * Math.random();
+	plane2.geometry.attributes.position.needsUpdate = true;
 }
 animate();
 
