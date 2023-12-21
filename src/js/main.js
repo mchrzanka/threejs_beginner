@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 //https://www.educative.io/answers/what-is-datgui-in-threejs
 import * as dat from 'dat.gui'; //adding dat.gui for user graphics controls
@@ -122,6 +123,26 @@ scene.add(sLightHelper);
 
 //FOG
 scene.fog = new THREE.Fog(0xffffff, 0, 200);
+
+//MODELS
+// Instantiate a loader
+const loader = new GLTFLoader();
+
+// Load a glTF resource
+loader.load(
+	// resource URL
+	'src/assets/duck.glb',
+	// called when the resource is loaded
+	function (gltf) {
+		const model = gltf.scene;
+		scene.add(model);
+		model.position.set(12, 0, 0);
+	},
+	// called when loading has errors
+	function (error) {
+		console.error(error);
+	}
+);
 
 //GUI FOR USERS - dat.gui
 const gui = new dat.GUI();
@@ -265,3 +286,10 @@ scene.background = cubeTextureLoader.load([
 
 //render everything
 renderer.render(scene, camera);
+
+//make the window and canvas responsive
+window.addEventListener('resize', function () {
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+});
