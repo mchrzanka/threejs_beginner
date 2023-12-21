@@ -147,6 +147,19 @@ gui.add(options, 'angle', 0, 1);
 gui.add(options, 'penumbra', 0, 1);
 gui.add(options, 'intensity', 0, 1000);
 
+//SELECTING OBJECTS FROM THE SCENE
+//we need to keep track of the camera location and the mouse position. Anything in between those two positions is able to be selected.
+const mousePosition = new THREE.Vector2();
+window.addEventListener('mousemove', function (e) {
+	mousePosition.x = (e.clientX / window.innerWidth) * 2 - 1;
+	mousePosition.y = (e.clientY / window.innerHeight) * 2 - 1;
+});
+
+const rayCaster = new THREE.Raycaster(); //a ray, in geometry, is a line that starts at a point and extends infinitely in one direction. Raycasting is a technique to determine what objects in a scene a ray is intersecting with.
+
+//each object in the scene has data, including an ID. We grab the ID and store it to use it in the animate function.
+const sphereId = sphere.id;
+
 //ANIMATION
 //sphere bounce
 let step = 0;
@@ -170,6 +183,17 @@ function animate() {
 	spotLight.penumbra = options.penumbra;
 	spotLight.intensity = options.intensity;
 	sLightHelper.update(); //call helper after every time we update the values
+
+	//setting the two ends of the ray for selecting objects in the scene
+	rayCaster.setFromCamera(mousePosition, camera);
+	const intersects = rayCaster.intersectObjects(scene.children); //variable that holds an object that contains any element in the scene that intersects with the ray
+
+	//loop through the intersects object to see if anything our mouse has passed over has the same ID as an object (in this case, the sphere). If it does, change the color of that object to red.
+	for (let i = 0; i < intersects.length; i++) {
+		if (intersects[i].object.id === sphereId) {
+			intersects[i].object.material.color.set(0xff0000);
+		}
+	}
 }
 animate();
 

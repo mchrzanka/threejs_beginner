@@ -5,7 +5,7 @@ https://www.youtube.com/watch?v=xJAfLdUgdc4&list=PLjcjAqAnHd1EIxV4FSZIiJZvsdrBc1
 
 ## see live:
 
-https://threejs-beginner.vercel.app/
+https://threejs-beginner-mchrzanka.vercel.app/
 
 ### install dependencies
 
