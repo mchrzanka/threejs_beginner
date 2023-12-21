@@ -131,7 +131,7 @@ const loader = new GLTFLoader();
 // Load a glTF resource
 loader.load(
 	// resource URL
-	'src/assets/duck.glb',
+	'../assets/duck.glb',
 	// called when the resource is loaded
 	function (gltf) {
 		const model = gltf.scene;
