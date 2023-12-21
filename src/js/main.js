@@ -180,6 +180,28 @@ plane2.geometry.attributes.position.array[2] -= 10 * Math.random();
 const lastPointZ = plane2.geometry.attributes.position.array.length - 1;
 plane2.geometry.attributes.position.array[lastPointZ] -= 10 * Math.random();
 
+//SHADERS
+const vShader = `
+void main(){
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}`;
+
+const fShader = `
+void main(){
+	gl_FragColor = vec4(0.5,0.5,1.0,1.0);
+}
+`;
+
+//my sphere
+const sphere2Geometry = new THREE.SphereGeometry(4);
+const sphere2Material = new THREE.ShaderMaterial({
+	vertexShader: vShader,
+	fragmentShader: fShader,
+});
+const sphere2 = new THREE.Mesh(sphere2Geometry, sphere2Material);
+scene.add(sphere2);
+sphere2.position.set(-5, 10, -10);
+
 //ANIMATION
 //sphere bounce
 let step = 0;
@@ -215,12 +237,12 @@ function animate() {
 		}
 	}
 
-	//animate the changing of the vertex points
-	plane2.geometry.attributes.position.array[0] = 10 * Math.random();
-	plane2.geometry.attributes.position.array[1] = 10 * Math.random();
-	plane2.geometry.attributes.position.array[2] = 10 * Math.random();
-	plane2.geometry.attributes.position.array[lastPointZ] = 10 * Math.random();
-	plane2.geometry.attributes.position.needsUpdate = true;
+	//animate the changing of the vertex points. Goes kind of crazy so I'm commenting out.
+	// plane2.geometry.attributes.position.array[0] = 10 * Math.random();
+	// plane2.geometry.attributes.position.array[1] = 10 * Math.random();
+	// plane2.geometry.attributes.position.array[2] = 10 * Math.random();
+	// plane2.geometry.attributes.position.array[lastPointZ] = 10 * Math.random();
+	// plane2.geometry.attributes.position.needsUpdate = true;
 }
 animate();
 
